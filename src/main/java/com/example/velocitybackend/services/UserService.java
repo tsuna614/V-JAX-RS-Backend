@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserService {
-    private MongoCollection<Document> collection = MongoDBUtil.getUserCollection();
+    final private MongoCollection<Document> collection = MongoDBUtil.getUserCollection();
 
     public UserService() {
     }
@@ -55,11 +55,20 @@ public class UserService {
         return Response.status(Response.Status.CREATED).entity(user).build();
     }
 
-//    public Response updateUser(UserModel user) {
-//        Document updatedDoc = new Document("username", user.getUsername())
-//                .append("email", user.getEmail());
-//        collection.updateOne(Filters.eq("_id", new ObjectId(userId)), new Document("$set", updatedDoc));
-//        user.setUserId(userId);
-//        return Response.ok(user).build();
-//    }
+    public Response updateUser(String userId, UserModel user) {
+        Document updatedDoc = new Document()
+                .append("email", user.getEmail())
+                .append("password", user.getPassword())
+                .append("firstName", user.getFirstName())
+                .append("lastName", user.getLastName())
+                .append("phoneNumber", user.getPhoneNumber())
+                .append("profileImageUrl", user.getProfileImageUrl())
+                .append("friendsId", user.getFriendsId())
+                .append("bookmarksId", user.getBookmarksId())
+                .append("refreshToken", user.getRefreshToken())
+                .append("createdAt", LocalDateTime.now());
+        collection.updateOne(Filters.eq("_id", new ObjectId(userId)), new Document("$set", updatedDoc));
+        user.setUserId(userId);
+        return Response.ok(user).build();
+    }
 }
