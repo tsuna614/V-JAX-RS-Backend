@@ -14,8 +14,14 @@ public class UserResource {
     final private UserService userService = new UserService();
 
     @GET
-    public List<UserModel> getUsers() {
+    public Response getUsers() {
         return userService.getAllUsers();
+    }
+
+    @GET
+    @Path("/getUserById/{userId}")
+    public Response getUsersById(@PathParam("userId") String userId) {
+        return userService.getUserById(userId);
     }
 
     @POST
@@ -28,12 +34,12 @@ public class UserResource {
     public Response updateUser(@PathParam("userId") String userId, UserModel user) {
         return userService.updateUser(userId, user);
     }
-//
-//    @DELETE
-//    @Path("/{userId}")
-//    public Response deleteUser(@PathParam("userId") String userId) {
-//        collection.deleteOne(Filters.eq("_id", new ObjectId(userId)));
-//        return Response.noContent().build();
-//    }
+
+    @DELETE
+    @Path("/{userId}")
+    public Response deleteUser(@PathParam("userId") String userId) {
+        return userService.deleteUser(userId);
+    }
+
 }
 

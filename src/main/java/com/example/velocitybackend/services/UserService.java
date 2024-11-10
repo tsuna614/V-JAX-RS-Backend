@@ -1,6 +1,7 @@
 package com.example.velocitybackend.services;
 
 import com.example.velocitybackend.models.UserModel;
+import com.example.velocitybackend.utils.GeneralUtil;
 import com.example.velocitybackend.utils.MongoDBUtil;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
@@ -18,57 +19,52 @@ public class UserService {
     public UserService() {
     }
 
-    public List<UserModel> getAllUsers() {
+    public Response getAllUsers() {
         List<UserModel> users = new ArrayList<>();
         for (Document doc : collection.find()) {
-            UserModel user = new UserModel();
-            user.setUserId(doc.getObjectId("_id").toString());
-            user.setEmail(doc.getString("email"));
-            user.setPassword(doc.getString("password"));
-            user.setFirstName(doc.getString("firstName"));
-            user.setLastName(doc.getString("lastName"));
-            user.setPhoneNumber(doc.getString("phoneNumber"));
-            user.setProfileImageUrl(doc.getString("profileImageUrl"));
-            user.setFriendsId(doc.getList("friendsId", String.class));
-            user.setBookmarksId(doc.getList("bookmarksId", String.class));
-            user.setRefreshToken(doc.getString("refreshToken"));
-            users.add(user);
+            users.add(UserModel.fromDocument(doc));
         }
-        return users;
+        return Response.ok(users).build();
+    }
+
+    public Response getUserById(String userId) {
+        Document userDoc = collection.find(Filters.eq("_id", new ObjectId(userId))).first();
+        if (userDoc == null) {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+        return Response.ok(UserModel.fromDocument(userDoc)).build();
     }
 
     public Response createUser(UserModel user) {
-        Document doc = new Document()
-                .append("email", user.getEmail())
-                .append("password", user.getPassword())
-                .append("firstName", user.getFirstName())
-                .append("lastName", user.getLastName())
-                .append("phoneNumber", user.getPhoneNumber())
-                .append("profileImageUrl", user.getProfileImageUrl())
-                .append("friendsId", user.getFriendsId())
-                .append("bookmarksId", user.getBookmarksId())
-                .append("refreshToken", user.getRefreshToken())
-                .append("createdAt", LocalDateTime.now());
+        // validate the required fields (e.g. email, password)
+        // if requirement are not met, respond with bad request and error message
+        String validateMessage = UserModel.validateUser(user);
+        if (validateMessage != null) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(GeneralUtil.getError(validateMessage)).build();
+        }
+        System.out.println("Local date time: " + LocalDateTime.now());
+        System.out.println("Java util time: " + new java.util.Date());
+        Document doc = UserModel.toDocument(user);
         collection.insertOne(doc);
         user.setUserId(doc.getObjectId("_id").toString());
-        System.out.println(user);
         return Response.status(Response.Status.CREATED).entity(user).build();
     }
 
     public Response updateUser(String userId, UserModel user) {
-        Document updatedDoc = new Document()
-                .append("email", user.getEmail())
-                .append("password", user.getPassword())
-                .append("firstName", user.getFirstName())
-                .append("lastName", user.getLastName())
-                .append("phoneNumber", user.getPhoneNumber())
-                .append("profileImageUrl", user.getProfileImageUrl())
-                .append("friendsId", user.getFriendsId())
-                .append("bookmarksId", user.getBookmarksId())
-                .append("refreshToken", user.getRefreshToken())
-                .append("createdAt", LocalDateTime.now());
+        // append all fields from the user except the one that is null and return a Document
+        Document updatedDoc = UserModel.filterNullFields(user);
+
         collection.updateOne(Filters.eq("_id", new ObjectId(userId)), new Document("$set", updatedDoc));
         user.setUserId(userId);
-        return Response.ok(user).build();
+        return Response.ok(GeneralUtil.getMessage("User updated successfully")).build();
+    }
+
+    public Response deleteUser(String userId) {
+        Document response = collection.findOneAndDelete(Filters.eq("_id", new ObjectId(userId)));
+
+        if (response == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity(GeneralUtil.getError("User not found")).build();
+        }
+        return Response.ok(GeneralUtil.getMessage("User deleted successfully")).build();
     }
 }
