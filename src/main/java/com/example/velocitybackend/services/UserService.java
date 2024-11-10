@@ -3,6 +3,7 @@ package com.example.velocitybackend.services;
 import com.example.velocitybackend.models.UserModel;
 import com.example.velocitybackend.utils.GeneralUtil;
 import com.example.velocitybackend.utils.MongoDBUtil;
+import com.example.velocitybackend.utils.UserUtil;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import jakarta.ws.rs.core.Response;
@@ -22,7 +23,7 @@ public class UserService {
     public Response getAllUsers() {
         List<UserModel> users = new ArrayList<>();
         for (Document doc : collection.find()) {
-            users.add(UserModel.fromDocument(doc));
+            users.add(UserUtil.fromDocument(doc));
         }
         return Response.ok(users).build();
     }
@@ -32,19 +33,19 @@ public class UserService {
         if (userDoc == null) {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
-        return Response.ok(UserModel.fromDocument(userDoc)).build();
+        return Response.ok(UserUtil.fromDocument(userDoc)).build();
     }
 
     public Response createUser(UserModel user) {
         // validate the required fields (e.g. email, password)
         // if requirement are not met, respond with bad request and error message
-        String validateMessage = UserModel.validateUser(user);
+        String validateMessage = UserUtil.validateUser(user);
         if (validateMessage != null) {
             return Response.status(Response.Status.BAD_REQUEST).entity(GeneralUtil.getError(validateMessage)).build();
         }
         System.out.println("Local date time: " + LocalDateTime.now());
         System.out.println("Java util time: " + new java.util.Date());
-        Document doc = UserModel.toDocument(user);
+        Document doc = UserUtil.toDocument(user);
         collection.insertOne(doc);
         user.setUserId(doc.getObjectId("_id").toString());
         return Response.status(Response.Status.CREATED).entity(user).build();
@@ -52,7 +53,7 @@ public class UserService {
 
     public Response updateUser(String userId, UserModel user) {
         // append all fields from the user except the one that is null and return a Document
-        Document updatedDoc = UserModel.filterNullFields(user);
+        Document updatedDoc = UserUtil.filterNullFields(user);
 
         collection.updateOne(Filters.eq("_id", new ObjectId(userId)), new Document("$set", updatedDoc));
         user.setUserId(userId);
