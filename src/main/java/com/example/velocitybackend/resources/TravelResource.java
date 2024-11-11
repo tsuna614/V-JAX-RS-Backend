@@ -18,7 +18,7 @@ public class TravelResource {
     }
 
     @GET
-    @Path("/getTravelById/{id}")
+    @Path("/{id}")
     public Response getTravelById(@PathParam("id") String id) {
         return travelService.getTravelById(id);
     }

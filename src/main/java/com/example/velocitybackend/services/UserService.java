@@ -10,7 +10,6 @@ import jakarta.ws.rs.core.Response;
 import org.bson.Document;
 import org.bson.types.ObjectId;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,8 +42,6 @@ public class UserService {
         if (validateMessage != null) {
             return Response.status(Response.Status.BAD_REQUEST).entity(GeneralUtil.getError(validateMessage)).build();
         }
-        System.out.println("Local date time: " + LocalDateTime.now());
-        System.out.println("Java util time: " + new java.util.Date());
         Document doc = UserUtil.toDocument(user);
         collection.insertOne(doc);
         user.setUserId(doc.getObjectId("_id").toString());

@@ -18,7 +18,7 @@ public class UserResource {
     }
 
     @GET
-    @Path("/getUserById/{userId}")
+    @Path("/{userId}")
     public Response getUsersById(@PathParam("userId") String userId) {
         return userService.getUserById(userId);
     }
