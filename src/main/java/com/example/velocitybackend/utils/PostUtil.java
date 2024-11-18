@@ -3,6 +3,8 @@ package com.example.velocitybackend.utils;
 import com.example.velocitybackend.models.PostModel;
 import org.bson.Document;
 
+import java.time.LocalDateTime;
+
 public class PostUtil {
     // Convert MongoDB Document to PostModel
     public static PostModel fromDocument(Document doc) {
@@ -15,6 +17,7 @@ public class PostUtil {
         post.setLikes(doc.getList("likes", String.class));
         post.setComments(doc.getList("comments", String.class));
         post.setShares(doc.getList("shares", String.class));
+        post.setCreatedAt(doc.getString("createdAt"));
         // review posts
         post.setRating(doc.getDouble("rating"));
         post.setTravelId(doc.getString("travelId"));
@@ -40,7 +43,9 @@ public class PostUtil {
                 .append("rating", post.getRating())
                 .append("travelId", post.getTravelId())
                 .append("postId", post.getPostId())
-                .append("sharedPostId", post.getSharedPostId());
+                .append("sharedPostId", post.getSharedPostId())
+                .append("createdAt", post.getCreatedAt() == null ? LocalDateTime.now().toString() : post.getCreatedAt());
+
     }
 
     // Validate the required fields of PostModel

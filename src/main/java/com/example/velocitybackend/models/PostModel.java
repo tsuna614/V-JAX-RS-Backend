@@ -12,6 +12,7 @@ public class PostModel {
     private List<String> likes;
     private List<String> comments;
     private List<String> shares;
+    private String createdAt;
 
     // For review posts only
     private Double rating;
@@ -25,7 +26,7 @@ public class PostModel {
 
     public PostModel() {}
 
-    public PostModel(String id, String userId, String content, String imageUrl, String contentType, List<String> likes, List<String> comments, List<String> shares, Double rating, String travelId, String postId, String sharedPostId) {
+    public PostModel(String id, String userId, String content, String imageUrl, String contentType, List<String> likes, List<String> comments, List<String> shares, Double rating, String travelId, String postId, String sharedPostId, String createdAt) {
         this.id = id;
         this.userId = userId;
         this.content = content;
@@ -38,6 +39,15 @@ public class PostModel {
         this.travelId = travelId;
         this.postId = postId;
         this.sharedPostId = sharedPostId;
+        this.createdAt = createdAt;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 
     public String getId() {

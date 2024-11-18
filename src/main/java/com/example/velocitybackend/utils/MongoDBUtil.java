@@ -27,4 +27,9 @@ public class MongoDBUtil {
         MongoDatabase database = mongoClient.getDatabase(DB_NAME);
         return database.getCollection("posts");
     }
+
+    public static MongoCollection<Document> getBookCollection() {
+        MongoDatabase database = mongoClient.getDatabase(DB_NAME);
+        return database.getCollection("books");
+    }
 }

@@ -37,7 +37,7 @@ public class PostService {
             }
             return Response.ok(PostUtil.fromDocument(doc)).build();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
@@ -54,7 +54,7 @@ public class PostService {
             }
             return Response.ok(normalPosts).build();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
@@ -71,7 +71,7 @@ public class PostService {
             }
             return Response.ok(ratingPosts).build();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
@@ -83,7 +83,7 @@ public class PostService {
             }
             return Response.ok(commentPosts).build();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
@@ -98,7 +98,7 @@ public class PostService {
             post.setId(doc.getObjectId("_id").toString());
             return Response.ok(post).build();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
@@ -109,7 +109,7 @@ public class PostService {
             collection.updateOne(Filters.eq("_id", new ObjectId(id)), reqBody);
             return Response.ok(GeneralUtil.getMessage("User updated successfully")).build();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
@@ -122,7 +122,7 @@ public class PostService {
             }
             return Response.ok(GeneralUtil.getMessage("Post deleted successfully")).build();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            return Response.serverError().entity(e.getMessage()).build();
         }
     }
 }

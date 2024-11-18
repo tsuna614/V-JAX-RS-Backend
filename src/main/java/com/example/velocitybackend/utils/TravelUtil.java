@@ -3,6 +3,8 @@ package com.example.velocitybackend.utils;
 import com.example.velocitybackend.models.TravelModel;
 import org.bson.Document;
 
+import java.time.LocalDateTime;
+
 public class TravelUtil {
     // Convert MongoDB Document to TravelModel
     public static TravelModel fromDocument(Document doc) {
@@ -52,7 +54,7 @@ public class TravelUtil {
                 .append("airline", travel.getAirline())
                 .append("location", travel.getLocation())
                 .append("carType", travel.getCarType())
-                .append("createdAt", travel.getCreatedAt());
+                .append("createdAt", travel.getCreatedAt() == null ? LocalDateTime.now().toString() : travel.getCreatedAt());
     }
 
     // Validate the required fields of TravelModel

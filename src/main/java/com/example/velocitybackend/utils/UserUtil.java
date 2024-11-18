@@ -38,7 +38,7 @@ public class UserUtil {
                 .append("friendsId", user.getFriendsId())
                 .append("bookmarksId", user.getBookmarksId())
                 .append("refreshToken", user.getRefreshToken())
-                .append("createdAt", (LocalDateTime.now()).toString());
+                .append("createdAt", user.getCreatedAt() == null ? LocalDateTime.now().toString() : user.getCreatedAt());
     }
 
     static public String validateUser(UserModel user) {
