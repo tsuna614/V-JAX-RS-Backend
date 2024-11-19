@@ -32,4 +32,11 @@ public class MongoDBUtil {
         MongoDatabase database = mongoClient.getDatabase(DB_NAME);
         return database.getCollection("books");
     }
+
+    public static MongoCollection<Document> getMessageCollection() {
+        MongoDatabase database = mongoClient.getDatabase(DB_NAME);
+        return database.getCollection("messages");
+    }
+
+
 }

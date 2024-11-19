@@ -60,7 +60,7 @@ public class BookService {
             Document reqBody = BookUtil.toDocument(book);
 
             bookCollection.updateOne(Filters.eq("_id", new ObjectId(id)), reqBody);
-            return Response.ok(GeneralUtil.getMessage("User updated successfully")).build();
+            return Response.ok(GeneralUtil.getMessage("Book updated successfully")).build();
         } catch (Exception e) {
             return Response.status(500).entity(e.getMessage()).build();
         }

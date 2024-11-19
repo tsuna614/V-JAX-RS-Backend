@@ -24,14 +24,14 @@ public class BookResource {
     }
 
     @POST
-    public  Response createBook(BookModel travel) {
-        return bookService.createBook(travel);
+    public  Response createBook(BookModel book) {
+        return bookService.createBook(book);
     }
 
     @PUT
     @Path("/{id}")
-    public Response updateBookById(@PathParam("id") String id, BookModel travel) {
-        return bookService.updateBook(id, travel);
+    public Response updateBookById(@PathParam("id") String id, BookModel book) {
+        return bookService.updateBook(id, book);
     }
 
     @DELETE
