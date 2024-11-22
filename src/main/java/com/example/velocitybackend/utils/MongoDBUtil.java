@@ -38,5 +38,8 @@ public class MongoDBUtil {
         return database.getCollection("messages");
     }
 
-
+    public static MongoCollection<Document> getNotificationCollection() {
+        MongoDatabase database = mongoClient.getDatabase(DB_NAME);
+        return database.getCollection("notifications");
+    }
 }
