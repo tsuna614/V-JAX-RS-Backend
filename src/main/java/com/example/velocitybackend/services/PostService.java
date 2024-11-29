@@ -52,6 +52,7 @@ public class PostService {
             )) {
                 normalPosts.add(PostUtil.fromDocument(post));
             }
+
             return Response.ok(normalPosts).build();
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();

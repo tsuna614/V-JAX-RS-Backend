@@ -23,6 +23,12 @@ public class UserResource {
         return userService.getUserById(userId);
     }
 
+    @GET
+    @Path("/getUserByEmail/{email}")
+    public Response getUsersByEmail(@PathParam("email") String email) {
+        return userService.getUserByEmail(email);
+    }
+
     @POST
     public Response createUser(UserModel user) {
         return userService.createUser(user);

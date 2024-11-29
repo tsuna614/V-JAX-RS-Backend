@@ -24,13 +24,13 @@ public class PostResource {
     }
 
     @GET
-    @Path("/getAllRatingPosts/{travelId}")
+    @Path("/getAllRatingPostsOfTravel/{travelId}")
     public Response getAllRatingPosts(@PathParam("travelId") String travelId) {
         return postService.getAllRatingPosts(travelId);
     }
 
     @GET
-    @Path("/getAllCommentPosts/{postId}")
+    @Path("/getAllCommentPostsOfPost/{postId}")
     public Response getAllCommentPosts(@PathParam("postId") String postId) {
         return postService.getAllCommentPosts(postId);
     }

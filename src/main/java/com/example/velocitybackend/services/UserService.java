@@ -12,6 +12,7 @@ import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UserService {
     final private MongoCollection<Document> collection = MongoDBUtil.getUserCollection();
@@ -20,49 +21,94 @@ public class UserService {
     }
 
     public Response getAllUsers() {
-        List<UserModel> users = new ArrayList<>();
-        for (Document doc : collection.find()) {
-            users.add(UserUtil.fromDocument(doc));
+        try {
+            List<UserModel> users = new ArrayList<>();
+            for (Document doc : collection.find()) {
+                users.add(UserUtil.fromDocument(doc));
+            }
+            return Response.ok(users).build();
+        } catch (Exception e) {
+            return Response.serverError().entity(e.getMessage()).build();
         }
-        return Response.ok(users).build();
     }
 
     public Response getUserById(String userId) {
-        Document userDoc = collection.find(Filters.eq("_id", new ObjectId(userId))).first();
-        if (userDoc == null) {
-            return Response.status(Response.Status.NOT_FOUND).build();
+        try {
+            Document userDoc = collection.find(Filters.eq("_id", new ObjectId(userId))).first();
+            if (userDoc == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok(UserUtil.fromDocument(userDoc)).build();
+        } catch (Exception e) {
+            return Response.serverError().entity(e.getMessage()).build();
         }
-        return Response.ok(UserUtil.fromDocument(userDoc)).build();
+    }
+
+    public Response getUserByEmail(String email) {
+        try {
+            Document userDoc = collection.find(Filters.eq("email", email)).first();
+            if (userDoc == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+            return Response.ok(UserUtil.fromDocument(userDoc)).build();
+        } catch (Exception e) {
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    // for authentication service
+    public Optional<UserModel> getUserEmail(String email) {
+        try {
+            Document userDoc = collection.find(Filters.eq("email", email)).first();
+            if (userDoc == null) {
+                return Optional.empty();
+            }
+            return Optional.of(UserUtil.fromDocument(userDoc));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
     }
 
     public Response createUser(UserModel user) {
-        // validate the required fields (e.g. email, password)
-        // if requirement are not met, respond with bad request and error message
-        String validateMessage = UserUtil.validateUser(user);
-        if (validateMessage != null) {
-            return Response.status(Response.Status.BAD_REQUEST).entity(GeneralUtil.getError(validateMessage)).build();
+        try {
+            // validate the required fields (e.g. email, password)
+            // if requirement are not met, respond with bad request and error message
+            String validateMessage = UserUtil.validateUser(user);
+            if (validateMessage != null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity(GeneralUtil.getError(validateMessage)).build();
+            }
+            Document doc = UserUtil.toDocument(user);
+            collection.insertOne(doc);
+            user.setUserId(doc.getObjectId("_id").toString());
+            return Response.status(Response.Status.CREATED).entity(user).build();
+        } catch (Exception e) {
+            return Response.serverError().entity(e.getMessage()).build();
         }
-        Document doc = UserUtil.toDocument(user);
-        collection.insertOne(doc);
-        user.setUserId(doc.getObjectId("_id").toString());
-        return Response.status(Response.Status.CREATED).entity(user).build();
     }
 
     public Response updateUser(String userId, UserModel user) {
-        // append all fields from the user except the one that is null and return a Document
-        Document updatedDoc = UserUtil.filterNullFields(user);
+        try {
+            // append all fields from the user except the one that is null and return a Document
+            Document updatedDoc = UserUtil.filterNullFields(user);
 
-        collection.updateOne(Filters.eq("_id", new ObjectId(userId)), new Document("$set", updatedDoc));
-        user.setUserId(userId);
-        return Response.ok(GeneralUtil.getMessage("User updated successfully")).build();
+            collection.updateOne(Filters.eq("_id", new ObjectId(userId)), new Document("$set", updatedDoc));
+            user.setUserId(userId);
+            return Response.ok(GeneralUtil.getMessage("User updated successfully")).build();
+        } catch (Exception e) {
+            return Response.serverError().entity(e.getMessage()).build();
+        }
     }
 
     public Response deleteUser(String userId) {
-        Document response = collection.findOneAndDelete(Filters.eq("_id", new ObjectId(userId)));
+        try {
+            Document response = collection.findOneAndDelete(Filters.eq("_id", new ObjectId(userId)));
 
-        if (response == null) {
-            return Response.status(Response.Status.NOT_FOUND).entity(GeneralUtil.getError("User not found")).build();
+            if (response == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity(GeneralUtil.getError("User not found")).build();
+            }
+            return Response.ok(GeneralUtil.getMessage("User deleted successfully")).build();
+        } catch (Exception e) {
+            return Response.serverError().entity(e.getMessage()).build();
         }
-        return Response.ok(GeneralUtil.getMessage("User deleted successfully")).build();
     }
 }
