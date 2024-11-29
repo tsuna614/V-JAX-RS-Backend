@@ -1,5 +1,6 @@
 package com.example.velocitybackend.resources;
 
+import com.example.velocitybackend.DTO.RefreshTokenDTO;
 import com.example.velocitybackend.models.UserModel;
 import com.example.velocitybackend.services.AuthService;
 import jakarta.ws.rs.*;
@@ -22,5 +23,11 @@ public class AuthResource {
     @Path("/login")
     public Response login(UserModel user) {
         return authService.login(user.getEmail(), user.getPassword());
+    }
+
+    @POST
+    @Path("/refresh")
+    public Response refresh(RefreshTokenDTO tokenDTO) {
+        return authService.refreshAccessToken(tokenDTO);
     }
 }
