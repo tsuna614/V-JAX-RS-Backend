@@ -9,7 +9,6 @@ import com.mongodb.client.model.Filters;
 import jakarta.ws.rs.core.Response;
 import org.bson.Document;
 import org.bson.types.ObjectId;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class TravelService {
 
     public Response getTravelById(String id) {
         try {
-            Document travelDoc = collection.find(Filters.eq("id", id)).first();
+            Document travelDoc = collection.find(Filters.eq("_id", new ObjectId(id))).first();
             if (travelDoc == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }

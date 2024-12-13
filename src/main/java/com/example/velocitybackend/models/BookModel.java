@@ -1,7 +1,7 @@
 package com.example.velocitybackend.models;
 
 public class BookModel {
-    private String id;
+    private String _id;
     private String travelId;
     private String userId;
     private String bookedDate;
@@ -10,8 +10,8 @@ public class BookModel {
 
     public BookModel() {}
 
-    public BookModel(String id, String travelId, String userId, String bookedDate, int amount, String createdAt) {
-        this.id = id;
+    public BookModel(String _id, String travelId, String userId, String bookedDate, int amount, String createdAt) {
+        this._id = _id;
         this.travelId = travelId;
         this.userId = userId;
         this.bookedDate = bookedDate;
@@ -20,11 +20,11 @@ public class BookModel {
     }
 
     public String getId() {
-        return id;
+        return _id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setId(String _id) {
+        this._id = _id;
     }
 
     public String getTravelId() {
