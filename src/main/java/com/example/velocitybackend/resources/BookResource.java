@@ -23,6 +23,12 @@ public class BookResource {
         return bookService.getBookById(id);
     }
 
+    @GET
+    @Path("/getAllBooksByUserId/{id}")
+    public Response getAllBooksByUserId(@PathParam("id") String id) {
+        return bookService.getAllBooksByUserId(id);
+    }
+
     @POST
     public  Response createBook(BookModel book) {
         return bookService.createBook(book);

@@ -5,7 +5,7 @@ import org.bson.Document;
 
 import java.time.LocalDateTime;
 
-public class PostUtil {
+public   class PostUtil {
     // Convert MongoDB Document to PostModel
     public static PostModel fromDocument(Document doc) {
         PostModel post = new PostModel();

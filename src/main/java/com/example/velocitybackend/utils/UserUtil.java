@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class UserUtil {
     public static UserModel fromDocument(Document doc) {
         UserModel user = new UserModel();
-        user.setUserId(doc.getObjectId("_id").toString());
+        user.setId(doc.getObjectId("_id").toString());
         user.setEmail(doc.getString("email"));
         user.setPassword(doc.getString("password"));
         user.setFirstName(doc.getString("firstName"));

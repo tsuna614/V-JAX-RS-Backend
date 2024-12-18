@@ -40,6 +40,20 @@ public class BookService {
         }
     }
 
+    public Response getAllBooksByUserId(String id) {
+        try {
+            final List<BookModel> books = new ArrayList<>();
+            for (Document document : bookCollection.find(
+                    Filters.eq("userId", id)
+            )) {
+                books.add(BookUtil.fromDocument(document));
+            }
+            return Response.ok(books).build();
+        } catch (Exception e) {
+            return Response.status(500).entity(e.getMessage()).build();
+        }
+    }
+
     public Response createBook(BookModel book) {
         try {
             String validateMessage = BookUtil.validateBook(book);

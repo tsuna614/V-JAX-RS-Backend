@@ -55,7 +55,6 @@ public class TravelService {
             return Response.serverError().entity(e.getMessage()).build();
         }
     }
-
     public Response updateTravel(String id, TravelModel travel) {
         try {
             Document updatedDoc = TravelUtil.filterNullFields(travel);

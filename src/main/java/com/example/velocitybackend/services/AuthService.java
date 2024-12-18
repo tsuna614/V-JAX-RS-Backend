@@ -56,7 +56,7 @@ public class AuthService {
             UserModel updatedRefreshToken = new UserModel();
             updatedRefreshToken.setRefreshToken(refreshToken);
 
-            userService.updateUser(user.getUserId(), updatedRefreshToken);
+            userService.updateUser(user.getId(), updatedRefreshToken);
 
             return Response.ok(new AuthResponseDTO("Login successfully", accessToken, refreshToken, user)).build();
         } catch (Exception e) {

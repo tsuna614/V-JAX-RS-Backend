@@ -32,9 +32,9 @@ public class UserService {
         }
     }
 
-    public Response getUserById(String userId) {
+    public Response getUserById(String id) {
         try {
-            Document userDoc = collection.find(Filters.eq("_id", new ObjectId(userId))).first();
+            Document userDoc = collection.find(Filters.eq("_id", new ObjectId(id))).first();
             if (userDoc == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
@@ -79,29 +79,29 @@ public class UserService {
             }
             Document doc = UserUtil.toDocument(user);
             collection.insertOne(doc);
-            user.setUserId(doc.getObjectId("_id").toString());
+            user.setId(doc.getObjectId("_id").toString());
             return Response.status(Response.Status.CREATED).entity(user).build();
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
-    public Response updateUser(String userId, UserModel user) {
+    public Response updateUser(String id, UserModel user) {
         try {
             // append all fields from the user except the one that is null and return a Document
             Document updatedDoc = UserUtil.filterNullFields(user);
 
-            collection.updateOne(Filters.eq("_id", new ObjectId(userId)), new Document("$set", updatedDoc));
-            user.setUserId(userId);
+            collection.updateOne(Filters.eq("_id", new ObjectId(id)), new Document("$set", updatedDoc));
+            user.setId(id);
             return Response.ok(GeneralUtil.getMessage("User updated successfully")).build();
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
     }
 
-    public Response deleteUser(String userId) {
+    public Response deleteUser(String id) {
         try {
-            Document response = collection.findOneAndDelete(Filters.eq("_id", new ObjectId(userId)));
+            Document response = collection.findOneAndDelete(Filters.eq("_id", new ObjectId(id)));
 
             if (response == null) {
                 return Response.status(Response.Status.NOT_FOUND).entity(GeneralUtil.getError("User not found")).build();

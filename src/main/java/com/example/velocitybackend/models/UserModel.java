@@ -2,7 +2,7 @@ package com.example.velocitybackend.models;
 import java.util.List;
 
 public class UserModel {
-    private String userId;
+    private String id;
     private String email;
     private String password;
     private String firstName;
@@ -16,8 +16,8 @@ public class UserModel {
 
     public UserModel() {}
 
-    public UserModel(String userId, String email, String password, String firstName, String lastName, String phoneNumber, String profileImageUrl, List<String> friendsId, List<String> bookmarksId, String refreshToken, String createdAt) {
-        this.userId = userId;
+    public UserModel(String id, String email, String password, String firstName, String lastName, String phoneNumber, String profileImageUrl, List<String> friendsId, List<String> bookmarksId, String refreshToken, String createdAt) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.firstName = firstName;
@@ -30,12 +30,13 @@ public class UserModel {
         this.createdAt = createdAt;
     }
 
-    public String getUserId() {
-        return userId;
+    // for some reason, THIS is the reason why response data is userId instead of id (it was getUserId)
+    public String getId() {
+        return id;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getEmail() {
