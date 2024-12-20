@@ -7,8 +7,7 @@ import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
 
 public class MongoDBUtil {
-    private static final String URI = "mongodb+srv://thedarkspiritaway:woHGvPrRvfUQCNBT@cluster0.hdmia.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
-//    private static final String URI = "mongodb+srv://new-user:quockhanh300803@cluster0.4stwd.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+    private static final String URI = Config.get("MONGODB_URI");
     private static final String DB_NAME = "test";
 //    private static final String COLLECTION_NAME = "users";
     private static final MongoClient mongoClient = MongoClients.create(URI);

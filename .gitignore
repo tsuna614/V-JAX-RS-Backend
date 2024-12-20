@@ -39,3 +39,5 @@ build/
 
 ### dotenv ###
 src/main/resources/.env
+/.metadata/
+/bin/

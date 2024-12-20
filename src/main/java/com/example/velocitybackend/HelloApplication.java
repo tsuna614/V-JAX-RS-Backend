@@ -22,6 +22,7 @@ public class HelloApplication extends Application {
         classes.add(PostResource.class);
         classes.add(TravelResource.class);
         classes.add(UserResource.class);
+        classes.add(CloudinaryResource.class);
 
         // NOTE: ADD THIS TO PREVENT CORS ERROR FROM CLIENT
         classes.add(CorsFilter.class);
