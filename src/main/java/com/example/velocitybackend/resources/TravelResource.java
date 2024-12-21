@@ -12,11 +12,19 @@ import jakarta.ws.rs.core.Response;
 public class TravelResource {
     final TravelService travelService = new TravelService();
 
+
     @GET
     public Response getAllTravels() {
         return travelService.getAllTravels();
     }
 
+    @GET
+    @Path("/getTravelByPage/")
+    public Response getTravelByPage(@QueryParam("travelType") String travelType, @QueryParam("page") int page) {
+        return travelService.getTravelByPage(travelType, page);
+    }
+
+    // (according to me) id should be at the very bottom
     @GET
     @Path("/{id}")
     public Response getTravelById(@PathParam("id") String id) {

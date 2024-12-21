@@ -27,6 +27,36 @@ public class TravelService {
         }
     }
 
+    public Response getTravelByPage(String travelType, int page) {
+        try {
+            // page starts from 1, not 0
+            if (page == 0) return Response.status(Response.Status.BAD_REQUEST).build();
+
+            List<TravelModel> travels = new ArrayList<>();
+            for (Document doc : collection.find(
+                    Filters.eq("travelType", travelType)
+            )) {
+                travels.add(TravelUtil.fromDocument(doc));
+            }
+
+            // filter the travel based on the chosen page
+            List<TravelModel> filteredTravels = new ArrayList<>();
+
+            int indexOfFirstObject = (page - 1) * 5;
+
+            for (int i = indexOfFirstObject; i < indexOfFirstObject + 5; i++) {
+                // because you can't get travels[10] if travels length is 10
+                if (travels.size() > i) {
+                    filteredTravels.add(travels.get(i));
+                }
+            }
+
+            return Response.ok(filteredTravels).build();
+        } catch (Exception e) {
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
     public Response getTravelById(String id) {
         try {
             Document travelDoc = collection.find(Filters.eq("_id", new ObjectId(id))).first();
