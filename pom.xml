@@ -18,6 +18,27 @@
     </properties>
 
     <dependencies>
+        <!-- Jakarta WebSocket API -->
+        <dependency>
+            <groupId>jakarta.websocket</groupId>
+            <artifactId>jakarta.websocket-api</artifactId>
+            <version>2.1.1</version>
+        </dependency>
+
+        <!-- Tomcat WebSocket Implementation -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-websocket</artifactId>
+            <version>11.0.0</version>
+        </dependency>
+
+        <!-- JSON Processing (Gson) -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
+
         <dependency> <!-- I have no idea why but adding this dependency solved the internal 500 error -->
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-module-jaxb-annotations</artifactId>

@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.example.velocitybackend.middlewares.CorsFilter;
 import com.example.velocitybackend.resources.*;
+import com.example.velocitybackend.websocket.*;
 
 @ApplicationPath("/api")
 public class HelloApplication extends Application {
@@ -23,6 +24,8 @@ public class HelloApplication extends Application {
         classes.add(TravelResource.class);
         classes.add(UserResource.class);
         classes.add(CloudinaryResource.class);
+
+        classes.add(WebSocketServer.class);
 
         // NOTE: ADD THIS TO PREVENT CORS ERROR FROM CLIENT
         classes.add(CorsFilter.class);

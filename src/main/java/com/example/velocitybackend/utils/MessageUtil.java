@@ -1,6 +1,7 @@
 package com.example.velocitybackend.utils;
 
 import com.example.velocitybackend.models.MessageModel;
+import com.google.gson.Gson;
 import org.bson.Document;
 
 import java.time.LocalDateTime;
