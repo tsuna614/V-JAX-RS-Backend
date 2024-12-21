@@ -30,7 +30,7 @@ public class TravelService {
     public Response getTravelByPage(String travelType, int page) {
         try {
             // page starts from 1, not 0
-            if (page == 0) return Response.status(Response.Status.BAD_REQUEST).build();
+            if (page <= 0) return Response.status(Response.Status.BAD_REQUEST).build();
 
             List<TravelModel> travels = new ArrayList<>();
             for (Document doc : collection.find(
