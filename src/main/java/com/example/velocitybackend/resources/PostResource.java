@@ -1,5 +1,6 @@
 package com.example.velocitybackend.resources;
 
+import com.example.velocitybackend.DTO.LikePostDTO;
 import com.example.velocitybackend.models.PostModel;
 import com.example.velocitybackend.services.PostService;
 import jakarta.ws.rs.*;
@@ -44,6 +45,12 @@ public class PostResource {
     @POST
     public  Response createPost(PostModel post) {
         return postService.createPost(post);
+    }
+
+    @POST
+    @Path("/likePost")
+    public  Response likePost(LikePostDTO reqBody) {
+        return postService.likePost(reqBody);
     }
 
     @PUT

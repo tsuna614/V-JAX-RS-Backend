@@ -1,5 +1,6 @@
 package com.example.velocitybackend.services;
 
+import com.example.velocitybackend.DTO.LikePostDTO;
 import com.example.velocitybackend.models.PostModel;
 import com.example.velocitybackend.utils.GeneralUtil;
 import com.example.velocitybackend.utils.MongoDBUtil;
@@ -103,11 +104,45 @@ public class PostService {
         }
     }
 
+    public Response likePost(LikePostDTO reqBody) {
+        try {
+            Document doc = collection.find(Filters.eq("_id", new ObjectId(reqBody.getPostId()))).first();
+
+            if (doc == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            PostModel post = new PostModel();
+            post = PostUtil.fromDocument(doc);
+
+            List<String> likedUsers = post.getLikes();
+
+            if (likedUsers == null) {
+                likedUsers = new ArrayList<>();
+                likedUsers.add(reqBody.getUserId());
+            }
+            else if (likedUsers.contains(reqBody.getUserId())) {
+                likedUsers.remove(reqBody.getUserId());
+            } else {
+                likedUsers.add(reqBody.getUserId());
+            }
+
+            post.setLikes(likedUsers);
+
+            return updatePost(reqBody.getPostId(), post);
+        } catch (Exception e) {
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
     public Response updatePost(String id, PostModel post) {
         try {
             Document reqBody = PostUtil.toDocument(post);
 
-            collection.updateOne(Filters.eq("_id", new ObjectId(id)), reqBody);
+            collection.updateOne(Filters.eq(
+                    "_id", new ObjectId(id)),
+                    new Document("$set", reqBody)
+            );
             return Response.ok(GeneralUtil.getMessage("User updated successfully")).build();
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
