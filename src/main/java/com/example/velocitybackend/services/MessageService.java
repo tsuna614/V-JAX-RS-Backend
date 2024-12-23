@@ -58,7 +58,7 @@ public class MessageService {
 
     public Response updateMessage(String id, MessageModel message) {
         try {
-            Document reqBody = MessageUtil.toDocument(message);
+            Document reqBody = MessageUtil.filterMessage(message);
 
             collection.updateOne(Filters.eq("_id", new ObjectId(id)), reqBody);
             return Response.ok(GeneralUtil.getMessage("Message updated successfully")).build();

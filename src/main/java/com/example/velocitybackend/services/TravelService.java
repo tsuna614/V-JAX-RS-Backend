@@ -1,9 +1,11 @@
 package com.example.velocitybackend.services;
 
+import com.example.velocitybackend.models.PostModel;
 import com.example.velocitybackend.models.TravelModel;
 import com.example.velocitybackend.utils.GeneralUtil;
 import com.example.velocitybackend.utils.MongoDBUtil;
 import com.example.velocitybackend.utils.TravelUtil;
+import com.google.gson.Gson;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
 import jakarta.ws.rs.core.Response;
@@ -14,6 +16,31 @@ import java.util.List;
 
 public class TravelService {
     final private MongoCollection<Document> collection = MongoDBUtil.getTravelCollection();
+    final PostService postService = new PostService();
+
+    private int getTravelRating(String travelId) {
+        int totalRating = 0;
+
+        List<PostModel> ratingPostList;
+
+        try (final Response response = postService.getAllRatingPosts(travelId)) {
+            if (response.getStatus() == 200) {
+                ratingPostList = (List<PostModel>) response.getEntity();
+
+                if (ratingPostList == null || ratingPostList.isEmpty()) return 0;
+
+                for (PostModel post : ratingPostList) {
+                    totalRating += post.getRating();
+                }
+
+                return totalRating / ratingPostList.size();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
 
     public Response getAllTravels() {
         try {
@@ -47,6 +74,7 @@ public class TravelService {
             for (int i = indexOfFirstObject; i < indexOfFirstObject + 5; i++) {
                 // because you can't get travels[10] if travels length is 10
                 if (travels.size() > i) {
+                    travels.get(i).setRating(getTravelRating(travels.get(i).getId()));
                     filteredTravels.add(travels.get(i));
                 }
             }

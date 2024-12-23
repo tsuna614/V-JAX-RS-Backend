@@ -57,7 +57,7 @@ public class NotificationService {
 
     public Response updateNotification(String id, NotificationModel notification) {
         try {
-            Document reqBody = NotificationUtil.toDocument(notification);
+            Document reqBody = NotificationUtil.filterNotification(notification);
 
             notificationCollection.updateOne(Filters.eq("_id", new ObjectId(id)), reqBody);
             return Response.ok(GeneralUtil.getMessage("Notification updated successfully")).build();

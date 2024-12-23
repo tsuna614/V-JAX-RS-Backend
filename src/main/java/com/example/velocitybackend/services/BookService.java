@@ -71,7 +71,7 @@ public class BookService {
 
     public Response updateBook(String id, BookModel book) {
         try {
-            Document reqBody = BookUtil.toDocument(book);
+            Document reqBody = BookUtil.filterBook(book);
 
             bookCollection.updateOne(Filters.eq("_id", new ObjectId(id)), reqBody);
             return Response.ok(GeneralUtil.getMessage("Book updated successfully")).build();

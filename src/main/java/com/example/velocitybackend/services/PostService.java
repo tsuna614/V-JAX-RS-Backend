@@ -137,7 +137,7 @@ public class PostService {
 
     public Response updatePost(String id, PostModel post) {
         try {
-            Document reqBody = PostUtil.toDocument(post);
+            Document reqBody = PostUtil.filterNullFields(post);
 
             collection.updateOne(Filters.eq(
                     "_id", new ObjectId(id)),
