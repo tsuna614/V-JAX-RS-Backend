@@ -112,7 +112,7 @@ public class PostService {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
 
-            PostModel post = new PostModel();
+            PostModel post;
             post = PostUtil.fromDocument(doc);
 
             List<String> likedUsers = post.getLikes();

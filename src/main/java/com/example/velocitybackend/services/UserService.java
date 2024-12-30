@@ -1,5 +1,6 @@
 package com.example.velocitybackend.services;
 
+import com.example.velocitybackend.DTO.AddFriendDTO;
 import com.example.velocitybackend.models.UserModel;
 import com.example.velocitybackend.utils.GeneralUtil;
 import com.example.velocitybackend.utils.MongoDBUtil;
@@ -107,6 +108,42 @@ public class UserService {
                 return Response.status(Response.Status.NOT_FOUND).entity(GeneralUtil.getError("User not found")).build();
             }
             return Response.ok(GeneralUtil.getMessage("User deleted successfully")).build();
+        } catch (Exception e) {
+            return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    public Response friendAction(AddFriendDTO reqBody, String action) {
+        try {
+            Document doc1 = collection.find(Filters.eq("_id", new ObjectId(reqBody.getSenderId()))).first();
+            Document doc2 = collection.find(Filters.eq("_id", new ObjectId(reqBody.getReceiverId()))).first();
+
+            if (doc1 == null || doc2 == null) {
+                return Response.status(Response.Status.NOT_FOUND).build();
+            }
+
+            UserModel user1 = UserUtil.fromDocument(doc1);
+            UserModel user2 = UserUtil.fromDocument(doc2);
+
+            List<String> user1Friends = user1.getFriendsId() == null ? new ArrayList<>() : new ArrayList<>(user1.getFriendsId());
+            List<String> user2Friends = user2.getFriendsId() == null ? new ArrayList<>() : new ArrayList<>(user2.getFriendsId());
+
+            if (action.equals("add"))
+            {
+                user1Friends.add(user2.getId());
+                user2Friends.add(user1.getId());
+            } else if (action.equals("remove")) {
+                user1Friends.remove(user2.getId());
+                user2Friends.remove(user1.getId());
+            }
+
+            user1.setFriendsId(user1Friends);
+            user2.setFriendsId(user2Friends);
+
+            collection.updateOne(Filters.eq("_id", new ObjectId(user1.getId())), new Document("$set", UserUtil.filterNullFields(user1)));
+            collection.updateOne(Filters.eq("_id", new ObjectId(user2.getId())), new Document("$set", UserUtil.filterNullFields(user2)));
+
+            return Response.ok(GeneralUtil.getMessage("Success")).build();
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
         }

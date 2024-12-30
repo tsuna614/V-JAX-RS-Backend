@@ -1,5 +1,6 @@
 package com.example.velocitybackend.resources;
 
+import com.example.velocitybackend.DTO.AddFriendDTO;
 import com.example.velocitybackend.models.UserModel;
 import com.example.velocitybackend.services.UserService;
 import jakarta.ws.rs.*;
@@ -30,6 +31,18 @@ public class UserResource {
     }
 
     @POST
+    @Path("/addFriends")
+    public Response addFriend(AddFriendDTO addFriendDTO) {
+        return userService.friendAction(addFriendDTO, "add");
+    }
+
+    @POST
+    @Path("/removeFriends")
+    public Response removeFriend(AddFriendDTO addFriendDTO) {
+        return userService.friendAction(addFriendDTO, "remove");
+    }
+
+    @POST
     public Response createUser(UserModel user) {
         return userService.createUser(user);
     }
@@ -45,6 +58,5 @@ public class UserResource {
     public Response deleteUser(@PathParam("userId") String userId) {
         return userService.deleteUser(userId);
     }
-
 }
 
