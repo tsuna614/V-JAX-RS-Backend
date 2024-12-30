@@ -53,6 +53,19 @@ public   class PostUtil {
         if (post.getUserId() == null || post.getUserId().isEmpty()) {
             return "User ID is required.";
         }
+        int nonNullFieldCount = 0;
+        if (post.getPostId() != null && !post.getPostId().isEmpty()) {
+            nonNullFieldCount++;
+        }
+        if (post.getTravelId() != null && !post.getTravelId().isEmpty()) {
+            nonNullFieldCount++;
+        }
+        if (post.getSharedPostId() != null && !post.getSharedPostId().isEmpty()) {
+            nonNullFieldCount++;
+        }
+        if (nonNullFieldCount > 1) {
+            return "You can only have one of these following fields at most: postId, travelId, sharedPostId";
+        }
         return null; // No validation errors
     }
 

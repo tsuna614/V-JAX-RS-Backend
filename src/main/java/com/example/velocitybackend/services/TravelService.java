@@ -18,34 +18,14 @@ public class TravelService {
     final private MongoCollection<Document> collection = MongoDBUtil.getTravelCollection();
     final PostService postService = new PostService();
 
-    private int getTravelRating(String travelId) {
-        int totalRating = 0;
-
-        List<PostModel> ratingPostList;
-
-        try (final Response response = postService.getAllRatingPosts(travelId)) {
-            if (response.getStatus() == 200) {
-                ratingPostList = (List<PostModel>) response.getEntity();
-
-                if (ratingPostList == null || ratingPostList.isEmpty()) return 0;
-
-                for (PostModel post : ratingPostList) {
-                    totalRating += post.getRating();
-                }
-
-                return totalRating / ratingPostList.size();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return 0;
-    }
-
     public Response getAllTravels() {
         try {
             List<TravelModel> travels = new ArrayList<>();
             for (Document doc : collection.find()) {
+//                TravelModel travel;
+//                travel = TravelUtil.fromDocument(doc);
+//                travel.setRating(getTravelRating(travel.getId()));
+//                travels.add(travel);
                 travels.add(TravelUtil.fromDocument(doc));
             }
             return Response.ok(travels).build();
@@ -136,5 +116,53 @@ public class TravelService {
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
         }
+    }
+
+    private int getTravelRating(String travelId) {
+        int totalRating = 0;
+
+        List<PostModel> ratingPostList;
+
+        try (final Response response = postService.getAllRatingPosts(travelId)) {
+            if (response.getStatus() == 200) {
+                ratingPostList = (List<PostModel>) response.getEntity();
+
+                if (ratingPostList == null || ratingPostList.isEmpty()) return 0;
+
+                for (PostModel post : ratingPostList) {
+                    totalRating += post.getRating();
+                }
+
+                return totalRating / ratingPostList.size();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public Response getTravelRatingByTravelId(String travelId) {
+        int totalRating = 0;
+
+        List<PostModel> ratingPostList;
+
+        try (final Response response = postService.getAllRatingPosts(travelId)) {
+            if (response.getStatus() == 200) {
+                ratingPostList = (List<PostModel>) response.getEntity();
+
+                if (ratingPostList == null || ratingPostList.isEmpty()) return Response.ok(0).build();
+
+                for (PostModel post : ratingPostList) {
+                    totalRating += post.getRating();
+                }
+
+                return Response.ok(totalRating / ratingPostList.size()).build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return Response.ok(0).build();
     }
 }

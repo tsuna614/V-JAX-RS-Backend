@@ -93,7 +93,7 @@ public class PostService {
         try {
             String validateMessage = PostUtil.validatePost(post);
             if (validateMessage != null) {
-                return Response.serverError().entity(validateMessage).build();
+                return Response.status(Response.Status.BAD_REQUEST).entity(validateMessage).build();
             }
             Document doc = PostUtil.toDocument(post);
             collection.insertOne(doc);

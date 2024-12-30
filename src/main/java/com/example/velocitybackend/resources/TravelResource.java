@@ -24,6 +24,12 @@ public class TravelResource {
         return travelService.getTravelByPage(travelType, page);
     }
 
+    @GET
+    @Path("/getTravelRatingByTravelId/{id}")
+    public Response getTravelRatingByTravelId(@PathParam("id") String id) {
+        return travelService.getTravelRatingByTravelId(id);
+    }
+
     // (according to me) id should be at the very bottom
     @GET
     @Path("/{id}")
