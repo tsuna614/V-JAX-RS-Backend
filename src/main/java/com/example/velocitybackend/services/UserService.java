@@ -1,6 +1,6 @@
 package com.example.velocitybackend.services;
 
-import com.example.velocitybackend.DTO.AddFriendDTO;
+import com.example.velocitybackend.DTO.SenderTargetDTO;
 import com.example.velocitybackend.models.UserModel;
 import com.example.velocitybackend.utils.GeneralUtil;
 import com.example.velocitybackend.utils.MongoDBUtil;
@@ -113,10 +113,10 @@ public class UserService {
         }
     }
 
-    public Response friendAction(AddFriendDTO reqBody, String action) {
+    public Response friendAction(SenderTargetDTO reqBody, String action) {
         try {
             Document doc1 = collection.find(Filters.eq("_id", new ObjectId(reqBody.getSenderId()))).first();
-            Document doc2 = collection.find(Filters.eq("_id", new ObjectId(reqBody.getReceiverId()))).first();
+            Document doc2 = collection.find(Filters.eq("_id", new ObjectId(reqBody.getTargetId()))).first();
 
             if (doc1 == null || doc2 == null) {
                 return Response.status(Response.Status.NOT_FOUND).build();
@@ -133,8 +133,8 @@ public class UserService {
                 user1Friends.add(user2.getId());
                 user2Friends.add(user1.getId());
             } else if (action.equals("remove")) {
-                user1Friends.remove(user2.getId());
-                user2Friends.remove(user1.getId());
+                user1Friends.removeIf(friendId -> friendId.equals(user2.getId()));
+                user2Friends.removeIf(friendId -> friendId.equals(user1.getId()));
             }
 
             user1.setFriendsId(user1Friends);
@@ -146,6 +146,34 @@ public class UserService {
             return Response.ok(GeneralUtil.getMessage("Success")).build();
         } catch (Exception e) {
             return Response.serverError().entity(e.getMessage()).build();
+        }
+    }
+
+    public Response toggleBookmark(SenderTargetDTO reqBody) {
+        try {
+            Document userDoc = collection.find(Filters.eq("_id", new ObjectId(reqBody.getSenderId()))).first();
+
+            if (userDoc == null) {
+                return Response.status(Response.Status.NOT_FOUND).entity(GeneralUtil.getError("User not found")).build();
+            }
+
+            UserModel user = UserUtil.fromDocument(userDoc);
+
+            List<String> userBookmarkedTravelsList = user.getBookmarksId() == null ? new ArrayList<>() : new ArrayList<>(user.getBookmarksId());
+
+            if (userBookmarkedTravelsList.contains(reqBody.getTargetId())) {
+                userBookmarkedTravelsList.removeIf(travelId -> travelId.equals(reqBody.getTargetId()));
+            } else {
+                userBookmarkedTravelsList.add(reqBody.getTargetId());
+            }
+
+            user.setBookmarksId(userBookmarkedTravelsList);
+
+            collection.updateOne(Filters.eq("_id", new ObjectId(user.getId())), new Document("$set", UserUtil.filterNullFields(user)));
+
+            return Response.ok(GeneralUtil.getMessage("Success")).build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.example.velocitybackend.resources;
 
-import com.example.velocitybackend.DTO.AddFriendDTO;
+import com.example.velocitybackend.DTO.SenderTargetDTO;
 import com.example.velocitybackend.models.UserModel;
 import com.example.velocitybackend.services.UserService;
 import jakarta.ws.rs.*;
@@ -32,14 +32,20 @@ public class UserResource {
 
     @POST
     @Path("/addFriends")
-    public Response addFriend(AddFriendDTO addFriendDTO) {
-        return userService.friendAction(addFriendDTO, "add");
+    public Response addFriend(SenderTargetDTO senderTargetDTO) {
+        return userService.friendAction(senderTargetDTO, "add");
     }
 
     @POST
     @Path("/removeFriends")
-    public Response removeFriend(AddFriendDTO addFriendDTO) {
-        return userService.friendAction(addFriendDTO, "remove");
+    public Response removeFriend(SenderTargetDTO senderTargetDTO) {
+        return userService.friendAction(senderTargetDTO, "remove");
+    }
+
+    @POST
+    @Path("/toggleBookmark")
+    public Response toggleBookmark(SenderTargetDTO senderTargetDTO) {
+        return userService.toggleBookmark(senderTargetDTO);
     }
 
     @POST
