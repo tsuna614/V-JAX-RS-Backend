@@ -20,6 +20,9 @@ public class UserUtil {
         user.setBookmarksId(doc.getList("bookmarksId", String.class));
         user.setRefreshToken(doc.getString("refreshToken"));
         user.setCreatedAt(doc.getString("createdAt"));
+        user.setUserType(doc.getString("userType"));
+        user.setCreatedTravelsId(doc.getList("createdTravelsId", String.class));
+        user.setProgression(doc.getDouble(("progression")));
 
 //        Date createdAt = doc.getDate("createdAt");
 //        user.setCreatedAt(createdAt != null ? isoFormat.format(createdAt) : null);
@@ -38,7 +41,10 @@ public class UserUtil {
                 .append("friendsId", user.getFriendsId())
                 .append("bookmarksId", user.getBookmarksId())
                 .append("refreshToken", user.getRefreshToken())
-                .append("createdAt", user.getCreatedAt() == null ? LocalDateTime.now().toString() : user.getCreatedAt());
+                .append("createdAt", user.getCreatedAt() == null ? LocalDateTime.now().toString() : user.getCreatedAt())
+                .append("createdTravelsId", user.getCreatedTravelsId())
+                .append("userType", user.getUserType())
+                .append("progression", user.getProgression());
     }
 
     static public String validateUser(UserModel user) {
@@ -81,6 +87,18 @@ public class UserUtil {
         }
         if (user.getRefreshToken() != null) {
             document.append("refreshToken", user.getRefreshToken());
+        }
+        if (user.getCreatedAt() != null) {
+            document.append("createdAt", user.getCreatedAt());
+        }
+        if (user.getCreatedTravelsId() != null) {
+            document.append("createdTravelsId", user.getCreatedTravelsId());
+        }
+        if (user.getProgression() != null) {
+            document.append("progression", user.getProgression());
+        }
+        if (user.getUserType() != null) {
+            document.append("userType", user.getUserType());
         }
         return document;
     }

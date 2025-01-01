@@ -15,6 +15,8 @@ import java.util.List;
 
 public class BookService {
     final private MongoCollection<Document> bookCollection = MongoDBUtil.getBookCollection();
+    final private UserService userService = new UserService();
+    final private TravelService travelService = new TravelService();
 
     public Response getAllBooks() {
         try {
@@ -63,6 +65,10 @@ public class BookService {
             Document doc = BookUtil.toDocument(book);
             bookCollection.insertOne(doc);
             book.setId(doc.getObjectId("_id").toString());
+
+            Double travelPrice = travelService.getTravelPriceByTravelId(book.getTravelId());
+            userService.increaseUserProgression(book.getUserId(), travelPrice * book.getAmount());
+
             return Response.ok(book).build();
         } catch (Exception e) {
             return Response.status(500).entity(e.getMessage()).build();

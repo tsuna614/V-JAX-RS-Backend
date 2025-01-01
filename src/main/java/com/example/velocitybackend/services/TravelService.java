@@ -2,12 +2,15 @@ package com.example.velocitybackend.services;
 
 import com.example.velocitybackend.models.PostModel;
 import com.example.velocitybackend.models.TravelModel;
+import com.example.velocitybackend.models.UserModel;
 import com.example.velocitybackend.utils.GeneralUtil;
 import com.example.velocitybackend.utils.MongoDBUtil;
 import com.example.velocitybackend.utils.TravelUtil;
+import com.example.velocitybackend.utils.UserUtil;
 import com.google.gson.Gson;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -164,5 +167,21 @@ public class TravelService {
         }
 
         return Response.ok(0).build();
+    }
+    
+    public Double getTravelPriceByTravelId(String travelId) {
+        try {
+            Document travelDoc = collection.find(Filters.eq("_id", new ObjectId(travelId))).first();
+
+            if (travelDoc == null) {
+                throw new NotFoundException("Travel not found");
+            }
+
+            Integer i = TravelUtil.fromDocument(travelDoc).getPrice();
+
+            return i.doubleValue();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

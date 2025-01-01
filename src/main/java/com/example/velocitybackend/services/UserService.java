@@ -7,6 +7,7 @@ import com.example.velocitybackend.utils.MongoDBUtil;
 import com.example.velocitybackend.utils.UserUtil;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Filters;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import org.bson.Document;
 import org.bson.types.ObjectId;
@@ -172,6 +173,28 @@ public class UserService {
             collection.updateOne(Filters.eq("_id", new ObjectId(user.getId())), new Document("$set", UserUtil.filterNullFields(user)));
 
             return Response.ok(GeneralUtil.getMessage("Success")).build();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void increaseUserProgression(String id, Double point) {
+        try {
+            Document userDoc = collection.find(Filters.eq("_id", new ObjectId(id))).first();
+
+            if (userDoc == null) {
+                throw new NotFoundException("User not found");
+            }
+
+            UserModel user = UserUtil.fromDocument(userDoc);
+
+            if (user.getProgression() == null) {
+                user.setProgression(point);
+            } else {
+                user.setProgression(user.getProgression() + point);
+            }
+
+            collection.updateOne(Filters.eq("_id", new ObjectId(user.getId())), new Document("$set", UserUtil.filterNullFields(user)));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
